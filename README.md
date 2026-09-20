@@ -2,6 +2,10 @@
 
 Free macOS utility built with SwiftUI. Organizes files in a folder by **creation age** or by **extension**.
 
+<p align="center">
+  <img src="docs/screenshot.png" alt="Sift app window" width="800" />
+</p>
+
 ## MVP features
 
 - Choose a folder (button or drag & drop)
