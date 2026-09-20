@@ -1,0 +1,402 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		AA0000010000000000000001 /* SiftApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000010000000000000101 /* SiftApp.swift */; };
+		AA0000010000000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000010000000000000102 /* ContentView.swift */; };
+		AA0000010000000000000003 /* OrganizerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000010000000000000103 /* OrganizerViewModel.swift */; };
+		AA0000010000000000000004 /* SortMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000010000000000000104 /* SortMode.swift */; };
+		AA0000010000000000000005 /* PlannedMove.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000010000000000000105 /* PlannedMove.swift */; };
+		AA0000010000000000000006 /* FolderScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000010000000000000106 /* FolderScanner.swift */; };
+		AA0000010000000000000007 /* FileOrganizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000010000000000000107 /* FileOrganizer.swift */; };
+		AA0000010000000000000008 /* DropZoneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000010000000000000108 /* DropZoneView.swift */; };
+		AA000001000000000000000A /* RoundedFocus.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000001000000000000010A /* RoundedFocus.swift */; };
+		AA000001000000000000000B /* AutomationJob.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000001000000000000010B /* AutomationJob.swift */; };
+		AA000001000000000000000C /* HeadlessOrganizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000001000000000000010C /* HeadlessOrganizer.swift */; };
+		AA000001000000000000000D /* ScheduleInstaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000001000000000000010D /* ScheduleInstaller.swift */; };
+		AA000001000000000000000E /* ScheduleSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000001000000000000010E /* ScheduleSheet.swift */; };
+		AA000001000000000000000F /* sift-schedule in Copy Helper */ = {isa = PBXBuildFile; fileRef = AA000001000000000000010F /* sift-schedule */; };
+		AA0000010000000000000012 /* com.sift.app.schedule.plist in Copy LaunchAgents */ = {isa = PBXBuildFile; fileRef = AA0000010000000000000112 /* com.sift.app.schedule.plist */; };
+		AA0000010000000000000009 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA0000010000000000000109 /* Assets.xcassets */; };
+		AA0000010000000000000013 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = AA0000010000000000000113 /* AppIcon.icon */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		AA0000010000000000000100 /* Sift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sift.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA0000010000000000000101 /* SiftApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiftApp.swift; sourceTree = "<group>"; };
+		AA0000010000000000000102 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		AA0000010000000000000103 /* OrganizerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizerViewModel.swift; sourceTree = "<group>"; };
+		AA0000010000000000000104 /* SortMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortMode.swift; sourceTree = "<group>"; };
+		AA0000010000000000000105 /* PlannedMove.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlannedMove.swift; sourceTree = "<group>"; };
+		AA0000010000000000000106 /* FolderScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderScanner.swift; sourceTree = "<group>"; };
+		AA0000010000000000000107 /* FileOrganizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileOrganizer.swift; sourceTree = "<group>"; };
+		AA0000010000000000000108 /* DropZoneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropZoneView.swift; sourceTree = "<group>"; };
+		AA000001000000000000010A /* RoundedFocus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedFocus.swift; sourceTree = "<group>"; };
+		AA000001000000000000010B /* AutomationJob.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutomationJob.swift; sourceTree = "<group>"; };
+		AA000001000000000000010C /* HeadlessOrganizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadlessOrganizer.swift; sourceTree = "<group>"; };
+		AA000001000000000000010D /* ScheduleInstaller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleInstaller.swift; sourceTree = "<group>"; };
+		AA000001000000000000010E /* ScheduleSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleSheet.swift; sourceTree = "<group>"; };
+		AA000001000000000000010F /* sift-schedule */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "sift-schedule"; sourceTree = "<group>"; };
+		AA0000010000000000000109 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AA0000010000000000000113 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
+		AA0000010000000000000110 /* Sift.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Sift.entitlements; sourceTree = "<group>"; };
+		AA0000010000000000000111 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AA0000010000000000000112 /* com.sift.app.schedule.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = com.sift.app.schedule.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AA0000010000000000000201 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		AA0000010000000000000300 = {
+			isa = PBXGroup;
+			children = (
+				AA0000010000000000000301 /* Sift */,
+				AA0000010000000000000305 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		AA0000010000000000000301 /* Sift */ = {
+			isa = PBXGroup;
+			children = (
+				AA0000010000000000000101 /* SiftApp.swift */,
+				AA0000010000000000000102 /* ContentView.swift */,
+				AA0000010000000000000103 /* OrganizerViewModel.swift */,
+				AA0000010000000000000302 /* Models */,
+				AA0000010000000000000303 /* Services */,
+				AA0000010000000000000304 /* Views */,
+				AA0000010000000000000306 /* Support */,
+				AA0000010000000000000307 /* LaunchAgents */,
+				AA0000010000000000000109 /* Assets.xcassets */,
+				AA0000010000000000000113 /* AppIcon.icon */,
+				AA0000010000000000000110 /* Sift.entitlements */,
+				AA0000010000000000000111 /* Info.plist */,
+			);
+			path = Sift;
+			sourceTree = "<group>";
+		};
+		AA0000010000000000000302 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				AA0000010000000000000104 /* SortMode.swift */,
+				AA0000010000000000000105 /* PlannedMove.swift */,
+				AA000001000000000000010B /* AutomationJob.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		AA0000010000000000000303 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				AA0000010000000000000106 /* FolderScanner.swift */,
+				AA0000010000000000000107 /* FileOrganizer.swift */,
+				AA000001000000000000010C /* HeadlessOrganizer.swift */,
+				AA000001000000000000010D /* ScheduleInstaller.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		AA0000010000000000000304 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				AA0000010000000000000108 /* DropZoneView.swift */,
+				AA000001000000000000010A /* RoundedFocus.swift */,
+				AA000001000000000000010E /* ScheduleSheet.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		AA0000010000000000000306 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				AA000001000000000000010F /* sift-schedule */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
+		AA0000010000000000000307 /* LaunchAgents */ = {
+			isa = PBXGroup;
+			children = (
+				AA0000010000000000000112 /* com.sift.app.schedule.plist */,
+			);
+			path = LaunchAgents;
+			sourceTree = "<group>";
+		};
+		AA0000010000000000000305 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AA0000010000000000000100 /* Sift.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AA0000010000000000000400 /* Sift */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA0000010000000000000602 /* Build configuration list for PBXNativeTarget "Sift" */;
+			buildPhases = (
+				AA0000010000000000000401 /* Sources */,
+				AA0000010000000000000201 /* Frameworks */,
+				AA0000010000000000000402 /* Resources */,
+				AA0000010000000000000403 /* Copy LaunchAgents */,
+				AA0000010000000000000404 /* Copy Helper */,
+				AA0000010000000000000405 /* Make schedule helper executable */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Sift;
+			productName = Sift;
+			productReference = AA0000010000000000000100 /* Sift.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AA0000010000000000000500 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					AA0000010000000000000400 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = AA0000010000000000000601 /* Build configuration list for PBXProject "Sift" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = ru;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				ru,
+				Base,
+			);
+			mainGroup = AA0000010000000000000300;
+			productRefGroup = AA0000010000000000000305 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AA0000010000000000000400 /* Sift */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AA0000010000000000000402 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA0000010000000000000009 /* Assets.xcassets in Resources */,
+				AA0000010000000000000013 /* AppIcon.icon in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		AA0000010000000000000403 /* Copy LaunchAgents */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Contents/Library/LaunchAgents;
+			dstSubfolderSpec = 1;
+			files = (
+				AA0000010000000000000012 /* com.sift.app.schedule.plist in Copy LaunchAgents */,
+			);
+			name = "Copy LaunchAgents";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA0000010000000000000404 /* Copy Helper */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 6;
+			files = (
+				AA000001000000000000000F /* sift-schedule in Copy Helper */,
+			);
+			name = "Copy Helper";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		AA0000010000000000000405 /* Make schedule helper executable */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(TARGET_BUILD_DIR)/$(EXECUTABLE_FOLDER_PATH)/sift-schedule",
+			);
+			name = "Make schedule helper executable";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "HELPER=\"${TARGET_BUILD_DIR}/${EXECUTABLE_FOLDER_PATH}/sift-schedule\"\nchmod +x \"$HELPER\"\nIDENTITY=\"${EXPANDED_CODE_SIGN_IDENTITY:-}\"\nif [ -z \"$IDENTITY\" ]; then IDENTITY=\"-\"; fi\ncodesign --force --sign \"$IDENTITY\" --identifier com.sift.app.schedule --timestamp=none --options runtime \"$HELPER\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AA0000010000000000000401 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA0000010000000000000001 /* SiftApp.swift in Sources */,
+				AA0000010000000000000002 /* ContentView.swift in Sources */,
+				AA0000010000000000000003 /* OrganizerViewModel.swift in Sources */,
+				AA0000010000000000000004 /* SortMode.swift in Sources */,
+				AA0000010000000000000005 /* PlannedMove.swift in Sources */,
+				AA0000010000000000000006 /* FolderScanner.swift in Sources */,
+				AA0000010000000000000007 /* FileOrganizer.swift in Sources */,
+				AA0000010000000000000008 /* DropZoneView.swift in Sources */,
+				AA000001000000000000000A /* RoundedFocus.swift in Sources */,
+				AA000001000000000000000B /* AutomationJob.swift in Sources */,
+				AA000001000000000000000C /* HeadlessOrganizer.swift in Sources */,
+				AA000001000000000000000D /* ScheduleInstaller.swift in Sources */,
+				AA000001000000000000000E /* ScheduleSheet.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		AA0000010000000000000701 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		AA0000010000000000000702 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		AA0000010000000000000703 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_ENTITLEMENTS = Sift/Sift.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 3;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Sift/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Sift;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Free utility";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sift.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		AA0000010000000000000704 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_ENTITLEMENTS = Sift/Sift.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 3;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Sift/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Sift;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Free utility";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sift.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AA0000010000000000000601 /* Build configuration list for PBXProject "Sift" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA0000010000000000000701 /* Debug */,
+				AA0000010000000000000702 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA0000010000000000000602 /* Build configuration list for PBXNativeTarget "Sift" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA0000010000000000000703 /* Debug */,
+				AA0000010000000000000704 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = AA0000010000000000000500 /* Project object */;
+}
