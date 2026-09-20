@@ -33,10 +33,6 @@ enum AppLanguage: String, CaseIterable, Identifiable, Codable {
            let language = AppLanguage(rawValue: saved) {
             return language
         }
-        let preferred = Locale.preferredLanguages.first ?? "en"
-        if preferred.hasPrefix("ru") { return .russian }
-        if preferred.hasPrefix("es") { return .spanish }
-        if preferred.hasPrefix("zh") { return .chinese }
         return .english
     }
 }
