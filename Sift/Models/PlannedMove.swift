@@ -12,7 +12,7 @@ struct ScannedFile: Identifiable, Hashable {
         self.url = url
         self.name = url.lastPathComponent
         let ext = url.pathExtension.lowercased()
-        self.fileExtension = ext.isEmpty ? "без расширения" : ext
+        self.fileExtension = ext.isEmpty ? LocalizationManager.noExtensionToken : ext
         self.createdAt = createdAt
     }
 }

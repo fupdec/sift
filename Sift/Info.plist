@@ -20,7 +20,7 @@
 		</dict>
 	</array>
 	<key>NSAppleEventsUsageDescription</key>
-	<string>Sift добавляет сценарий в Автоматор и запускает разбор файлов по расписанию.</string>
+	<string>Sift adds an Automator workflow and organizes files on a schedule.</string>
 	<key>NSUserNotificationAlertStyle</key>
 	<string>banner</string>
 </dict>

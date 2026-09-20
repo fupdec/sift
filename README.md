@@ -1,51 +1,54 @@
 # Sift
 
-Бесплатная macOS-утилита на SwiftUI: разбирает файлы в папке по **давности создания** или по **расширению**.
+Free macOS utility built with SwiftUI. Organizes files in a folder by **creation age** or by **extension**.
 
-## Возможности MVP
+## MVP features
 
-- Выбор папки (кнопка или drag & drop)
-- Режимы: по давности / по расширению
-- Опция «включая подпапки»
-- Предпросмотр перемещений до применения
-- Создание папок и перемещение файлов
-- Уникальные имена при конфликтах (`file (2).pdf`)
-- Сценарий Автоматора и разбор по расписанию (те же правила, что в окне)
+- Choose a folder (button or drag & drop)
+- Modes: by age / by extension
+- Option to include subfolders
+- Preview moves before applying
+- Creates folders and moves files
+- Unique names on conflicts (`file (2).pdf`)
+- Automator workflow and scheduled runs (same rules as in the window)
+- UI languages: English, Spanish, Chinese, Russian
 
-### По давности
-Пороги настраиваются в диалоге **Время** (по умолчанию):
-- младше **3 дней** — остаются в папке
-- **3–7 дней** → `7 дней`
-- **8–30 дней** → `30 дней`
-- старше **30 дней** → `Архив`
+### By age
+Thresholds are set in the **Timing** dialog (defaults):
+- younger than **3 days** — stay in the folder
+- **3–7 days** → `7 days`
+- **8–30 days** → `30 days`
+- older than **30 days** → `Archive`
 
-### По расширению
-Группы вроде `Images`, `PDF`, `Documents`, `Code`, либо папка с именем расширения.
+Folder names follow the selected app language.
 
-## Запуск
+### By extension
+Groups such as `Images`, `PDF`, `Documents`, `Code`, or a folder named after the extension.
 
-1. Открой `Sift.xcodeproj` в Xcode
-2. Выбери схему **Sift**
+## Run
+
+1. Open `Sift.xcodeproj` in Xcode
+2. Select the **Sift** scheme
 3. Run (`⌘R`)
 
-Требования: macOS 13+, Xcode 15+
+Requirements: macOS 13+, Xcode 15+
 
-## Автоматор и расписание
+## Automator and schedule
 
-1. Выберите папку и режим (давность / расширение, подпапки, пороги во **Время**).
-2. Нажмите **Добавить в Автоматор**.
-3. Укажите интервал: каждый час, каждый день или каждую неделю.
+1. Choose a folder and mode (age / extension, subfolders, thresholds in **Timing**).
+2. Click **Add to Automator**.
+3. Pick an interval: every hour, every day, or every week.
 
-Sift сохраняет папку, ставит сценарий в Автоматор и запускает тот же разбор в фоне.
+Sift saves the folder, installs an Automator workflow, and runs the same organize pass in the background.
 
-- Службы: `Разобрать файлы (Sift)` — можно повесить на горячую клавишу в Системных настройках
-- Оповещение Календаря: `~/Library/Workflows/Applications/Calendar/Sift.workflow`
-- Фоновый запуск: объект входа / LaunchAgent, результат приходит уведомлением
+- Services: `Organize Files (Sift)` — assign a hotkey in System Settings
+- Calendar alarm: `~/Library/Workflows/Applications/Calendar/Sift.workflow`
+- Background launch: Login Item / LaunchAgent; results arrive as a notification
 
-Если macOS попросит разрешение, включите Sift в **Настройки → Основные → Объекты входа и расширения**. Для уведомлений разрешите их при первом запросе.
+If macOS asks for permission, enable Sift under **Settings → General → Login Items & Extensions**. Allow notifications when prompted.
 
-## Безопасность
+## Safety
 
-- Только перемещение внутри выбранной папки
-- App Sandbox + доступ к user-selected файлам
-- Офлайн, без сети и аккаунтов
+- Moves only inside the selected folder
+- App Sandbox + access to user-selected files
+- Offline — no network, no accounts

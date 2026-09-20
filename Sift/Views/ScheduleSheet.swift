@@ -7,9 +7,11 @@ struct AutomationCard: View {
     let onConfigure: () -> Void
     let onRemove: () -> Void
 
+    @EnvironmentObject private var l10n: LocalizationManager
+
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Автоматизация")
+            Text(l10n.t("automation.title"))
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(Theme.muted)
                 .textCase(.uppercase)
@@ -20,7 +22,7 @@ struct AutomationCard: View {
                     Text(job.scheduleSummary)
                         .font(.system(size: 13, weight: .semibold))
                         .foregroundStyle(Theme.ink)
-                    Text("«\(job.folderName)» · \(job.mode.title)")
+                    Text(l10n.t("automation.card.line", job.folderName, job.mode.title))
                         .font(.system(size: 11))
                         .foregroundStyle(Theme.muted)
                         .lineLimit(2)
@@ -33,21 +35,21 @@ struct AutomationCard: View {
                 }
 
                 HStack(spacing: 12) {
-                    Button("Изменить", action: onConfigure)
-                    Button("Убрать", action: onRemove)
+                    Button(l10n.t("action.change"), action: onConfigure)
+                    Button(l10n.t("action.remove"), action: onRemove)
                         .foregroundStyle(Theme.danger)
                 }
                 .font(.system(size: 12, weight: .semibold))
                 .buttonStyle(RoundedFocusButtonStyle(cornerRadius: 8))
                 .roundedKeyboardFocus(cornerRadius: 8, inset: -2)
             } else {
-                Text("Сценарий Автоматора и разбор по расписанию — те же правила, что в окне.")
+                Text(l10n.t("automation.blurb"))
                     .font(.system(size: 12))
                     .foregroundStyle(Theme.muted)
                     .fixedSize(horizontal: false, vertical: true)
 
                 Button(action: onConfigure) {
-                    Label("Добавить в Автоматор", systemImage: "clock.badge.checkmark")
+                    Label(l10n.t("automation.add"), systemImage: "clock.badge.checkmark")
                         .font(.system(size: 12, weight: .semibold))
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 8)
@@ -58,7 +60,7 @@ struct AutomationCard: View {
                 .buttonStyle(RoundedFocusButtonStyle(cornerRadius: 10))
                 .roundedKeyboardFocus(cornerRadius: 10, inset: -2)
                 .disabled(!hasFolder)
-                .help(hasFolder ? "Сохранить сценарий и включить расписание" : "Сначала выберите папку")
+                .help(hasFolder ? l10n.t("automation.add.help") : l10n.t("automation.need_folder.help"))
             }
         }
     }
@@ -72,6 +74,7 @@ struct ScheduleSheet: View {
     @Binding var isPresented: Bool
     var onChange: () -> Void
 
+    @EnvironmentObject private var l10n: LocalizationManager
     @State private var frequency: ScheduleFrequency = .daily
     @State private var time = Calendar.current.date(bySettingHour: 9, minute: 0, second: 0, of: Date()) ?? Date()
     @State private var weekday = Calendar.current.component(.weekday, from: Date())
@@ -86,44 +89,44 @@ struct ScheduleSheet: View {
             Divider().opacity(0.5)
             Form {
                 Section {
-                    LabeledContent("Папка") {
-                        Text(folderName.isEmpty ? "не выбрана" : folderName)
+                    LabeledContent(l10n.t("schedule.folder")) {
+                        Text(folderName.isEmpty ? l10n.t("schedule.folder.none") : folderName)
                             .foregroundStyle(Theme.ink)
                     }
-                    LabeledContent("Режим") {
+                    LabeledContent(l10n.t("schedule.mode")) {
                         Text(mode.title)
                     }
-                    LabeledContent("Подпапки") {
-                        Text(includeSubfolders ? "включая" : "только эта папка")
+                    LabeledContent(l10n.t("schedule.subfolders")) {
+                        Text(includeSubfolders ? l10n.t("schedule.subfolders.yes") : l10n.t("schedule.subfolders.no"))
                     }
                 } header: {
-                    Text("Что будет запускаться")
+                    Text(l10n.t("schedule.section.what"))
                 } footer: {
-                    Text("По расписанию выполняются те же шаги, что кнопка «Разобрать»: сканирование, правила давности или расширения, создание папок и перемещение. Пороги из «Время» берутся актуальные.")
+                    Text(l10n.t("schedule.footer.what"))
                 }
 
                 Section {
-                    Picker("Как часто", selection: $frequency) {
+                    Picker(l10n.t("schedule.frequency"), selection: $frequency) {
                         ForEach(ScheduleFrequency.allCases) { item in
                             Text(item.title).tag(item)
                         }
                     }
 
                     if frequency != .hourly {
-                        DatePicker("Время", selection: $time, displayedComponents: .hourAndMinute)
+                        DatePicker(l10n.t("schedule.time"), selection: $time, displayedComponents: .hourAndMinute)
                     }
 
                     if frequency == .weekly {
-                        Picker("День недели", selection: $weekday) {
+                        Picker(l10n.t("schedule.weekday"), selection: $weekday) {
                             ForEach(orderedWeekdays, id: \.self) { day in
                                 Text(AutomationJob.weekdayName(day).capitalized).tag(day)
                             }
                         }
                     }
                 } header: {
-                    Text("Расписание")
+                    Text(l10n.t("schedule.section.when"))
                 } footer: {
-                    Text("Сценарий появится в Автоматоре (Службы и оповещения Календаря). Запуск идёт в фоне, результат — уведомлением.")
+                    Text(l10n.t("schedule.footer.when"))
                 }
 
                 if let errorMessage {
@@ -147,10 +150,10 @@ struct ScheduleSheet: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text("Автоматор и расписание")
+            Text(l10n.t("schedule.sheet.title"))
                 .font(.system(size: 17, weight: .semibold, design: .rounded))
                 .foregroundStyle(Theme.ink)
-            Text("Разбор выбранной папки без открытия окна")
+            Text(l10n.t("schedule.sheet.subtitle"))
                 .font(.system(size: 12))
                 .foregroundStyle(Theme.muted)
         }
@@ -160,7 +163,7 @@ struct ScheduleSheet: View {
     private var footer: some View {
         HStack {
             Spacer()
-            Button("Отмена") {
+            Button(l10n.t("action.cancel")) {
                 isPresented = false
             }
             .keyboardShortcut(.cancelAction)
@@ -175,7 +178,7 @@ struct ScheduleSheet: View {
                 if isWorking {
                     ProgressView().controlSize(.small)
                 } else {
-                    Text(existing.enabled ? "Сохранить" : "Добавить в Автоматор")
+                    Text(existing.enabled ? l10n.t("action.save") : l10n.t("automation.add"))
                 }
             }
             .keyboardShortcut(.defaultAction)

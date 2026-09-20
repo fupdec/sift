@@ -57,8 +57,8 @@ final class OrganizerViewModel: ObservableObject {
         panel.canChooseFiles = false
         panel.canChooseDirectories = true
         panel.allowsMultipleSelection = false
-        panel.prompt = "Выбрать"
-        panel.message = "Выберите папку для разбора"
+        panel.prompt = L10n.t("panel.choose")
+        panel.message = L10n.t("panel.message")
 
         guard panel.runModal() == .OK, let url = panel.url else { return }
         setFolder(url)
@@ -92,7 +92,7 @@ final class OrganizerViewModel: ObservableObject {
 
         var isDirectory: ObjCBool = false
         guard FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory), isDirectory.boolValue else {
-            errorMessage = "Нужна именно папка."
+            errorMessage = L10n.t("error.need_folder")
             return
         }
 
@@ -143,8 +143,8 @@ final class OrganizerViewModel: ObservableObject {
         isBusy = true
         errorMessage = nil
         statusMessage = scanSubfolders
-            ? "Подсчёт файлов в папке и подпапках…"
-            : "Подсчёт файлов…"
+            ? L10n.t("status.counting_subfolders")
+            : L10n.t("status.counting")
 
         refreshTask = Task {
             let countOutcome: Result<CountResult, Error> = await withTaskCancellationHandler {
@@ -178,7 +178,7 @@ final class OrganizerViewModel: ObservableObject {
                     isBusy = false
                     alertFileCount = ScanLimits.hardLimit
                     showHardLimitAlert = true
-                    statusMessage = "Слишком много файлов (>\(ScanLimits.hardLimit.formatted()))."
+                    statusMessage = L10n.t("status.too_many", ScanLimits.hardLimit)
                     return
                 }
 
@@ -187,11 +187,11 @@ final class OrganizerViewModel: ObservableObject {
                     isBusy = false
                     alertFileCount = counted.count
                     showLargeFolderWarning = true
-                    statusMessage = "Найдено \(counted.count.formatted()) файлов — нужно подтверждение."
+                    statusMessage = L10n.t("status.need_confirm", counted.count)
                     return
                 }
 
-                statusMessage = "Сканирование \(counted.count.formatted()) файлов…"
+                statusMessage = L10n.t("status.scanning", counted.count)
                 await performFullScan(
                     root: scanRoot,
                     mode: scanMode,
@@ -217,7 +217,7 @@ final class OrganizerViewModel: ObservableObject {
         let cancelFlag = CancelFlag()
 
         isBusy = true
-        statusMessage = "Сканирование \(alertFileCount.formatted()) файлов…"
+        statusMessage = L10n.t("status.scanning", alertFileCount)
 
         refreshTask?.cancel()
         refreshTask = Task {
@@ -260,7 +260,7 @@ final class OrganizerViewModel: ObservableObject {
             refresh()
         } else {
             isBusy = false
-            statusMessage = "Выберите меньшую папку или отключите подпапки."
+            statusMessage = L10n.t("status.pick_smaller")
         }
     }
 
@@ -269,7 +269,7 @@ final class OrganizerViewModel: ObservableObject {
         let plansSnapshot = plans
 
         isBusy = true
-        statusMessage = "Перемещение файлов…"
+        statusMessage = L10n.t("status.moving")
 
         refreshTask?.cancel()
         refreshTask = Task {
@@ -282,7 +282,7 @@ final class OrganizerViewModel: ObservableObject {
             switch result {
             case .success(let moved, let skipped):
                 errorMessage = nil
-                statusMessage = "Готово: перемещено \(moved), пропущено \(skipped)"
+                statusMessage = L10n.t("status.done", moved, skipped)
                 isBusy = false
                 refresh()
             case .failure(let message):
@@ -313,6 +313,7 @@ final class OrganizerViewModel: ObservableObject {
         cancelFlag: CancelFlag
     ) async {
         let ageSettings = AgeSettingsSnapshot.load()
+        let l10n = LocalizationManager.shared.snapshot
         let outcome: Result<(files: [ScannedFile], plans: [PlannedMove], hitHardLimit: Bool), Error> =
             await Task.detached(priority: .userInitiated) {
                 do {
@@ -326,7 +327,8 @@ final class OrganizerViewModel: ObservableObject {
                         files: scan.files,
                         root: root,
                         mode: mode,
-                        ageSettings: ageSettings
+                        ageSettings: ageSettings,
+                        l10n: l10n
                     )
                     return .success((scan.files, planned, scan.hitHardLimit))
                 } catch {
@@ -346,7 +348,7 @@ final class OrganizerViewModel: ObservableObject {
                 isBusy = false
                 alertFileCount = ScanLimits.hardLimit
                 showHardLimitAlert = true
-                statusMessage = "Слишком много файлов (>\(ScanLimits.hardLimit.formatted()))."
+                statusMessage = L10n.t("status.too_many", ScanLimits.hardLimit)
                 return
             }
             await applyScan(files: result.files, plans: result.plans)
@@ -380,17 +382,23 @@ final class OrganizerViewModel: ObservableObject {
         isBusy = false
         errorMessage = nil
 
-        var status = "\(files.count.formatted()) файлов · \(plans.count.formatted()) к перемещению · \(Set(plans.map(\.groupName)).count) папок"
+        var status = L10n.t(
+            "status.summary",
+            files.count,
+            plans.count,
+            Set(plans.map(\.groupName)).count
+        )
         let kept = FileOrganizer.keptRecentCount(
             files: files,
             mode: mode,
-            ageSettings: AgeSettingsSnapshot.load()
+            ageSettings: AgeSettingsSnapshot.load(),
+            l10n: LocalizationManager.shared.snapshot
         )
         if kept > 0 {
-            status += " · \(kept.formatted()) свежих оставлены"
+            status += L10n.t("status.kept_fresh", kept)
         }
         if plans.count > ScanLimits.previewRowLimit {
-            status += " · в списке первые \(ScanLimits.previewRowLimit.formatted())"
+            status += L10n.t("status.preview_cap", ScanLimits.previewRowLimit)
         }
         statusMessage = status
     }
@@ -420,7 +428,7 @@ final class OrganizerViewModel: ObservableObject {
         return result
     }
 
-    /// «7 дней» → «30 дней» → «Архив»; остальные группы — по имени.
+    /// Age folders first (by day number), then Archive, then other groups by name.
     private nonisolated static func previewGroupIsBefore(
         _ lhs: (name: String, total: Int, items: [PlannedMove]),
         _ rhs: (name: String, total: Int, items: [PlannedMove])
@@ -433,7 +441,7 @@ final class OrganizerViewModel: ObservableObject {
     }
 
     private nonisolated static func previewGroupRank(_ name: String) -> (bucket: Int, days: Int, name: String) {
-        if name.caseInsensitiveCompare("Архив") == .orderedSame {
+        if LocalizationManager.isArchiveFolderName(name) {
             return (2, 0, name)
         }
         let digits = name.prefix { $0.isNumber }

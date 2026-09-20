@@ -4,13 +4,18 @@ import ServiceManagement
 import UserNotifications
 
 enum ScheduleInstaller {
-    static let serviceWorkflowName = "Разобрать файлы Sift.workflow"
+    /// Stable English filenames so language switches don’t leave orphan workflows.
+    static let serviceWorkflowName = "Organize Files Sift.workflow"
     static let calendarWorkflowName = "Sift.workflow"
     static let launchAgentLabel = "com.sift.app.schedule"
     static let launchAgentFileName = "com.sift.app.schedule.plist"
     static let bundledAgentPlist = "com.sift.app.schedule.plist"
 
+    @MainActor
+    private static var l10n: LocalizationSnapshot { LocalizationManager.shared.snapshot }
+
     @discardableResult
+    @MainActor
     static func install(
         folder: URL,
         mode: SortMode,
@@ -45,9 +50,9 @@ enum ScheduleInstaller {
             lastRunAt: Date(),
             lastMessage: nil
         )
-        job.lastMessage = "Сценарий добавлен в Автоматор. \(job.scheduleSummary)."
+        job.lastMessage = l10n.t("schedule.installed", job.scheduleSummary)
         AutomationStore.saveJob(job)
-        return job.lastMessage ?? "Готово"
+        return job.lastMessage ?? l10n.t("schedule.done")
     }
 
     static func remove() throws {
@@ -82,12 +87,23 @@ enum ScheduleInstaller {
 
     private static func removeAutomatorWorkflows() {
         let fm = FileManager.default
-        let service = RealHome.url
-            .appendingPathComponent("Library/Services/\(serviceWorkflowName)", isDirectory: true)
-        let calendar = RealHome.url
-            .appendingPathComponent("Library/Workflows/Applications/Calendar/\(calendarWorkflowName)", isDirectory: true)
-        try? fm.removeItem(at: service)
-        try? fm.removeItem(at: calendar)
+        let names = [
+            serviceWorkflowName,
+            "Разобрать файлы Sift.workflow",
+            "Разобрать файлы FileSorter.workflow",
+            "Organize Files Sift.workflow"
+        ]
+        let calendarNames = [calendarWorkflowName, "FileSorter.workflow"]
+        for name in Set(names) {
+            let service = RealHome.url
+                .appendingPathComponent("Library/Services/\(name)", isDirectory: true)
+            try? fm.removeItem(at: service)
+        }
+        for name in Set(calendarNames) {
+            let calendar = RealHome.url
+                .appendingPathComponent("Library/Workflows/Applications/Calendar/\(name)", isDirectory: true)
+            try? fm.removeItem(at: calendar)
+        }
         NSUpdateDynamicServices()
     }
 
@@ -163,7 +179,7 @@ enum ScheduleInstaller {
             throw AutomationError.launchAgentFailed(
                 message?.isEmpty == false
                     ? message!
-                    : "Не удалось включить расписание. Разрешите Sift в «Настройки → Основные → Объекты входа»."
+                    : LocalizationSnapshot(language: AppLanguage.resolveInitial()).t("schedule.launch_failed")
             )
         }
     }
@@ -192,7 +208,7 @@ enum ScheduleInstaller {
                 "NSServices": [[
                     "NSBackgroundColorName": "background",
                     "NSIconName": "NSActionTemplate",
-                    "NSMenuItem": ["default": "Разобрать файлы (Sift)"],
+                    "NSMenuItem": ["default": LocalizationSnapshot(language: AppLanguage.resolveInitial()).t("schedule.service_menu")],
                     "NSMessage": "runWorkflowAsService"
                 ]]
             ]
@@ -248,7 +264,7 @@ enum ScheduleInstaller {
                         "Types": ["com.apple.cocoa.string"]
                     ],
                     "ActionBundlePath": "/System/Library/Automator/Run Shell Script.action",
-                    "ActionName": "Запустить скрипт оболочки",
+                    "ActionName": "Run Shell Script",
                     "ActionParameters": [
                         "COMMAND_STRING": command,
                         "CheckedForUserDefaultShell": true,
@@ -263,7 +279,7 @@ enum ScheduleInstaller {
                     "Category": ["AMCategoryUtilities"],
                     "Class Name": "RunShellScriptAction",
                     "InputUUID": inputUUID,
-                    "Keywords": ["Оболочка", "Скрипт", "Команда", "Запустить", "Unix"],
+                    "Keywords": ["Shell", "Script", "Command", "Run", "Unix"],
                     "OutputUUID": outputUUID,
                     "UUID": actionUUID,
                     "UnlocalizedApplications": ["Automator"],

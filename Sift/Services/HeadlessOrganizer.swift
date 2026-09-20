@@ -2,15 +2,17 @@ import Foundation
 import UserNotifications
 
 enum HeadlessOrganizer {
-    /// Сканирует сохранённую папку и выполняет те же перемещения, что кнопка «Разобрать».
+    /// Scans the saved folder and applies the same moves as the Organize button.
     static func run(scheduled: Bool) async -> String? {
         var job = AutomationStore.loadJob()
+        let l10n = LocalizationSnapshot(language: AppLanguage.resolveInitial())
+
         if scheduled {
             guard job.enabled else { return nil }
             guard job.isDue() else { return nil }
         } else {
             guard job.enabled || AutomationStore.loadBookmark() != nil else {
-                return "Сначала добавьте папку в Автоматор через Sift."
+                return l10n.t("auto.need_setup")
             }
         }
 
@@ -24,7 +26,8 @@ enum HeadlessOrganizer {
             let message = try await organize(
                 folder: folder,
                 mode: job.mode,
-                includeSubfolders: job.includeSubfolders
+                includeSubfolders: job.includeSubfolders,
+                l10n: l10n
             )
             job.lastRunAt = Date()
             job.lastMessage = message
@@ -43,7 +46,8 @@ enum HeadlessOrganizer {
     private static func organize(
         folder: URL,
         mode: SortMode,
-        includeSubfolders: Bool
+        includeSubfolders: Bool,
+        l10n: LocalizationSnapshot
     ) async throws -> String {
         let ageSettings = AgeSettingsSnapshot.load()
 
@@ -70,15 +74,16 @@ enum HeadlessOrganizer {
                 files: scan.files,
                 root: folder,
                 mode: mode,
-                ageSettings: ageSettings
+                ageSettings: ageSettings,
+                l10n: l10n
             )
             if plans.isEmpty {
-                return "Нечего перемещать в «\(folder.lastPathComponent)»."
+                return l10n.t("auto.nothing", folder.lastPathComponent)
             }
 
             switch FileOrganizer.execute(plans: plans) {
             case .success(let moved, let skipped):
-                return "Готово: перемещено \(moved), пропущено \(skipped) — «\(folder.lastPathComponent)»."
+                return l10n.t("auto.done", moved, skipped, folder.lastPathComponent)
             case .failure(let message):
                 throw NSError(
                     domain: "Sift",

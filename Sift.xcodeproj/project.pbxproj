@@ -24,6 +24,7 @@
 		AA0000010000000000000012 /* com.sift.app.schedule.plist in Copy LaunchAgents */ = {isa = PBXBuildFile; fileRef = AA0000010000000000000112 /* com.sift.app.schedule.plist */; };
 		AA0000010000000000000009 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA0000010000000000000109 /* Assets.xcassets */; };
 		AA0000010000000000000013 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = AA0000010000000000000113 /* AppIcon.icon */; };
+		AA0000010000000000000014 /* LocalizationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000010000000000000114 /* LocalizationManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +45,7 @@
 		AA000001000000000000010F /* sift-schedule */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "sift-schedule"; sourceTree = "<group>"; };
 		AA0000010000000000000109 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AA0000010000000000000113 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
+		AA0000010000000000000114 /* LocalizationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationManager.swift; sourceTree = "<group>"; };
 		AA0000010000000000000110 /* Sift.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Sift.entitlements; sourceTree = "<group>"; };
 		AA0000010000000000000111 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AA0000010000000000000112 /* com.sift.app.schedule.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = com.sift.app.schedule.plist; sourceTree = "<group>"; };
@@ -77,6 +79,7 @@
 				AA0000010000000000000302 /* Models */,
 				AA0000010000000000000303 /* Services */,
 				AA0000010000000000000304 /* Views */,
+				AA0000010000000000000308 /* Localization */,
 				AA0000010000000000000306 /* Support */,
 				AA0000010000000000000307 /* LaunchAgents */,
 				AA0000010000000000000109 /* Assets.xcassets */,
@@ -116,6 +119,14 @@
 				AA000001000000000000010E /* ScheduleSheet.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		AA0000010000000000000308 /* Localization */ = {
+			isa = PBXGroup;
+			children = (
+				AA0000010000000000000114 /* LocalizationManager.swift */,
+			);
+			path = Localization;
 			sourceTree = "<group>";
 		};
 		AA0000010000000000000306 /* Support */ = {
@@ -182,10 +193,12 @@
 			};
 			buildConfigurationList = AA0000010000000000000601 /* Build configuration list for PBXProject "Sift" */;
 			compatibilityVersion = "Xcode 14.0";
-			developmentRegion = ru;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				es,
+				"zh-Hans",
 				ru,
 				Base,
 			);
@@ -277,6 +290,7 @@
 				AA000001000000000000000C /* HeadlessOrganizer.swift in Sources */,
 				AA000001000000000000000D /* ScheduleInstaller.swift in Sources */,
 				AA000001000000000000000E /* ScheduleSheet.swift in Sources */,
+				AA0000010000000000000014 /* LocalizationManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

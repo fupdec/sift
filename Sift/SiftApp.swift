@@ -14,6 +14,7 @@ struct SiftApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(LocalizationManager.shared)
                 .frame(minWidth: 780, minHeight: 560)
                 .onAppear {
                     if appDelegate.backgroundMode {

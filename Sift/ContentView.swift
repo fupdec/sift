@@ -2,6 +2,7 @@ import AppKit
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject private var l10n: LocalizationManager
     @StateObject private var model = OrganizerViewModel()
     @State private var ageSettings = AgeSettingsSnapshot.load()
     @State private var showAgeSettings = false
@@ -11,7 +12,6 @@ struct ContentView: View {
 
     var body: some View {
         GeometryReader { geo in
-            // После ignoresSafeArea(top) insets.top — высота ряда светофора / зоны перетаскивания.
             let titlebarHeight = max(geo.safeAreaInsets.top, TitlebarClearance.minimumHeight)
 
             ZStack {
@@ -38,12 +38,14 @@ struct ContentView: View {
         }
         .ignoresSafeArea(.container, edges: .top)
         .preferredColorScheme(.light)
+        .id(l10n.language)
         .sheet(isPresented: $showAgeSettings) {
             AgeSettingsSheet(
                 settings: $ageSettings,
                 isPresented: $showAgeSettings,
                 onSave: { model.refresh() }
             )
+            .environmentObject(l10n)
         }
         .sheet(isPresented: $showSchedule) {
             ScheduleSheet(
@@ -57,19 +59,20 @@ struct ContentView: View {
                     model.statusMessage = automationJob.lastMessage
                 }
             )
+            .environmentObject(l10n)
         }
-        .confirmationDialog("Убрать автоматизацию?", isPresented: $showRemoveAutomation) {
-            Button("Убрать", role: .destructive) {
+        .confirmationDialog(l10n.t("remove.automation.title"), isPresented: $showRemoveAutomation) {
+            Button(l10n.t("action.remove"), role: .destructive) {
                 do {
                     try ScheduleInstaller.remove()
                     automationJob = AutomationStore.loadJob()
-                    model.statusMessage = "Сценарий Автоматора и расписание удалены."
+                    model.statusMessage = l10n.t("remove.automation.done")
                 } catch {
                     model.errorMessage = error.localizedDescription
                 }
             }
         } message: {
-            Text("Сценарий будет удалён из Автоматора, фоновый запуск остановится.")
+            Text(l10n.t("remove.automation.message"))
         }
         .onReceive(NotificationCenter.default.publisher(for: .siftDidAutoOrganize)) { note in
             automationJob = AutomationStore.loadJob()
@@ -80,16 +83,21 @@ struct ContentView: View {
                 model.refresh()
             }
         }
-        .alert("Много файлов", isPresented: $model.showLargeFolderWarning) {
-            Button("Продолжить") { model.confirmLargeScan() }
-            Button("Отмена", role: .cancel) { model.cancelLargeScan() }
-        } message: {
-            Text("Найдено \(model.alertFileCount.formatted()) файлов. Предпросмотр и разбор могут занять заметное время и нагрузить Mac. Продолжить?")
+        .onChange(of: l10n.language) { _ in
+            if model.folderURL != nil {
+                model.refresh()
+            }
         }
-        .alert("Слишком много файлов", isPresented: $model.showHardLimitAlert) {
-            Button("OK", role: .cancel) { model.acknowledgeHardLimit() }
+        .alert(l10n.t("alert.large.title"), isPresented: $model.showLargeFolderWarning) {
+            Button(l10n.t("action.continue")) { model.confirmLargeScan() }
+            Button(l10n.t("action.cancel"), role: .cancel) { model.cancelLargeScan() }
         } message: {
-            Text("Обнаружено больше \(ScanLimits.hardLimit.formatted()) файлов. Сканирование остановлено. Отключите «включая подпапки» или выберите меньшую папку.")
+            Text(l10n.t("alert.large.message", model.alertFileCount))
+        }
+        .alert(l10n.t("alert.hard.title"), isPresented: $model.showHardLimitAlert) {
+            Button(l10n.t("action.ok"), role: .cancel) { model.acknowledgeHardLimit() }
+        } message: {
+            Text(l10n.t("alert.hard.message", ScanLimits.hardLimit))
         }
     }
 
@@ -111,7 +119,7 @@ struct ContentView: View {
                             .font(.system(size: 28, weight: .semibold, design: .rounded))
                             .foregroundStyle(Theme.ink)
 
-                        Text("Разбор файлов по дате или типу")
+                        Text(l10n.t("app.tagline"))
                             .font(.system(size: 13, weight: .regular))
                             .foregroundStyle(Theme.muted)
                     }
@@ -125,7 +133,7 @@ struct ContentView: View {
 
                     VStack(alignment: .leading, spacing: 10) {
                         HStack {
-                            Text("Как разобрать")
+                            Text(l10n.t("sort.how"))
                                 .font(.system(size: 12, weight: .semibold))
                                 .foregroundStyle(Theme.muted)
                                 .textCase(.uppercase)
@@ -136,7 +144,7 @@ struct ContentView: View {
                             Button {
                                 showAgeSettings = true
                             } label: {
-                                Label("Время", systemImage: "slider.horizontal.3")
+                                Label(l10n.t("sort.time"), systemImage: "slider.horizontal.3")
                                     .font(.system(size: 11, weight: .semibold))
                                     .labelStyle(.titleAndIcon)
                                     .padding(.horizontal, 8)
@@ -147,7 +155,7 @@ struct ContentView: View {
                             }
                             .buttonStyle(RoundedFocusButtonStyle(cornerRadius: 8))
                             .roundedKeyboardFocus(cornerRadius: 8, inset: -2)
-                            .help("Настройки порогов давности")
+                            .help(l10n.t("sort.time.help"))
                         }
 
                         ForEach(SortMode.allCases) { mode in
@@ -162,7 +170,7 @@ struct ContentView: View {
                     }
 
                     Toggle(isOn: $model.includeSubfolders) {
-                        Text("Включая подпапки")
+                        Text(l10n.t("sort.include_subfolders"))
                             .font(.system(size: 13, weight: .medium))
                     }
                     .toggleStyle(.switch)
@@ -185,6 +193,8 @@ struct ContentView: View {
                         onConfigure: { showSchedule = true },
                         onRemove: { showRemoveAutomation = true }
                     )
+
+                    languagePicker
                 }
                 .padding(.horizontal, 24)
                 .padding(.top, 4)
@@ -213,7 +223,7 @@ struct ContentView: View {
                             ProgressView()
                                 .controlSize(.small)
                         } else {
-                            Text("Разобрать")
+                            Text(l10n.t("action.organize"))
                                 .font(.system(size: 15, weight: .semibold))
                         }
                         Spacer()
@@ -233,10 +243,29 @@ struct ContentView: View {
         }
     }
 
+    private var languagePicker: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(l10n.t("language.title"))
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(Theme.muted)
+                .textCase(.uppercase)
+                .tracking(0.6)
+
+            Picker("", selection: $l10n.language) {
+                ForEach(AppLanguage.allCases) { language in
+                    Text(language.nativeName).tag(language)
+                }
+            }
+            .labelsHidden()
+            .pickerStyle(.menu)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
     private var preview: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
-                Text("Предпросмотр")
+                Text(l10n.t("preview.title"))
                     .font(.system(size: 18, weight: .semibold, design: .rounded))
                     .foregroundStyle(Theme.ink)
 
@@ -246,7 +275,7 @@ struct ContentView: View {
                     Button {
                         model.refresh()
                     } label: {
-                        Text("Обновить")
+                        Text(l10n.t("action.refresh"))
                             .font(.system(size: 13, weight: .medium))
                             .padding(.horizontal, 10)
                             .padding(.vertical, 6)
@@ -264,23 +293,23 @@ struct ContentView: View {
 
             if model.folderURL == nil {
                 emptyState(
-                    title: "Папка ещё не выбрана",
-                    detail: "Перетащите папку слева или нажмите «Выбрать папку»."
+                    title: l10n.t("preview.empty.title"),
+                    detail: l10n.t("preview.empty.detail")
                 )
             } else if model.isBusy {
                 emptyState(
-                    title: "Сканирование…",
-                    detail: model.statusMessage ?? "Читаем файлы в фоне, интерфейс не блокируется."
+                    title: l10n.t("preview.scanning.title"),
+                    detail: model.statusMessage ?? l10n.t("preview.scanning.detail")
                 )
             } else if model.showLargeFolderWarning {
                 emptyState(
-                    title: "Нужно подтверждение",
-                    detail: "Найдено много файлов. Подтвердите действие в диалоге, чтобы продолжить."
+                    title: l10n.t("preview.confirm.title"),
+                    detail: l10n.t("preview.confirm.detail")
                 )
             } else if model.plans.isEmpty {
                 emptyState(
-                    title: "Нечего перемещать",
-                    detail: "В этой папке нет файлов под текущие правила, либо они уже на месте."
+                    title: l10n.t("preview.nothing.title"),
+                    detail: l10n.t("preview.nothing.detail")
                 )
             } else {
                 ScrollView {
@@ -332,7 +361,7 @@ struct ContentView: View {
                         }
 
                         if model.hiddenPreviewCount > 0 {
-                            Text("…и ещё \(model.hiddenPreviewCount.formatted()) файлов в предпросмотре скрыто")
+                            Text(l10n.t("preview.hidden", model.hiddenPreviewCount))
                                 .font(.system(size: 12, weight: .medium))
                                 .foregroundStyle(Theme.muted)
                                 .padding(.top, 4)
@@ -406,6 +435,7 @@ private struct ModeCard: View {
 struct AgeSettingsSheet: View {
     @Binding var settings: AgeSettingsSnapshot
     @Binding var isPresented: Bool
+    @EnvironmentObject private var l10n: LocalizationManager
 
     @State private var keepUnderDays: Int = 3
     @State private var midSplitDays: Int = 7
@@ -420,30 +450,30 @@ struct AgeSettingsSheet: View {
             Form {
                 Section {
                     stepperRow(
-                        title: "Оставлять на месте",
-                        detail: "Файлы младше этого срока не перемещаются",
+                        title: l10n.t("age.keep.title"),
+                        detail: l10n.t("age.keep.detail"),
                         value: $keepUnderDays,
                         range: 1...365,
-                        unit: "дн."
+                        unit: l10n.t("age.unit")
                     )
 
                     stepperRow(
-                        title: "Граница средней папки",
-                        detail: "До этого срока → папка «\(midSplitDays) дней»",
+                        title: l10n.t("age.mid.title"),
+                        detail: l10n.t("age.mid.detail", l10n.daysFolderName(midSplitDays)),
                         value: $midSplitDays,
                         range: keepUnderDays...max(keepUnderDays, archiveAfterDays),
-                        unit: "дн."
+                        unit: l10n.t("age.unit")
                     )
 
                     stepperRow(
-                        title: "В архив старше",
-                        detail: "Файлы старше этого срока → «Архив»",
+                        title: l10n.t("age.archive.title"),
+                        detail: l10n.t("age.archive.detail", l10n.archiveFolderName),
                         value: $archiveAfterDays,
                         range: (keepUnderDays + 1)...3650,
-                        unit: "дн."
+                        unit: l10n.t("age.unit")
                     )
                 } header: {
-                    Text("Пороги по давности")
+                    Text(l10n.t("age.section"))
                 } footer: {
                     Text(summaryText)
                         .font(.system(size: 12))
@@ -472,10 +502,10 @@ struct AgeSettingsSheet: View {
     private var header: some View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
-                Text("Настройки времени")
+                Text(l10n.t("age.sheet.title"))
                     .font(.system(size: 17, weight: .semibold, design: .rounded))
                     .foregroundStyle(Theme.ink)
-                Text("Правила для режима «По давности»")
+                Text(l10n.t("age.sheet.subtitle"))
                     .font(.system(size: 12))
                     .foregroundStyle(Theme.muted)
             }
@@ -485,7 +515,7 @@ struct AgeSettingsSheet: View {
                 midSplitDays = 7
                 archiveAfterDays = 30
             } label: {
-                Text("Сбросить")
+                Text(l10n.t("action.reset"))
                     .font(.system(size: 12, weight: .medium))
             }
             .buttonStyle(.plain)
@@ -497,7 +527,7 @@ struct AgeSettingsSheet: View {
     private var footer: some View {
         HStack {
             Spacer()
-            Button("Отмена") {
+            Button(l10n.t("action.cancel")) {
                 isPresented = false
             }
             .keyboardShortcut(.cancelAction)
@@ -506,7 +536,7 @@ struct AgeSettingsSheet: View {
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
 
-            Button("Сохранить") {
+            Button(l10n.t("action.save")) {
                 var next = AgeSettingsSnapshot(
                     keepUnderDays: keepUnderDays,
                     midSplitDays: midSplitDays,
@@ -531,12 +561,14 @@ struct AgeSettingsSheet: View {
     }
 
     private var summaryText: String {
-        """
-        • младше \(keepUnderDays) дн. — остаются в папке
-        • \(keepUnderDays)–\(midSplitDays) дн. → «\(midSplitDays) дней»
-        • \(midSplitDays + 1)–\(archiveAfterDays) дн. → «\(archiveAfterDays) дней»
-        • старше \(archiveAfterDays) дн. → «Архив»
-        """
+        l10n.t(
+            "age.summary",
+            keepUnderDays,
+            midSplitDays,
+            midSplitDays + 1,
+            archiveAfterDays,
+            l10n.archiveFolderName
+        )
     }
 
     private func stepperRow(
@@ -597,8 +629,6 @@ enum Theme {
     static let danger = Color(red: 0.75, green: 0.22, blue: 0.22)
 }
 
-/// Невидимая полоса перетаскивания в зоне светофора. Не участвует в вёрстке колонок —
-/// разделитель идёт до края окна, контент начинается сразу под этой полосой.
 private struct TitlebarClearance: View {
     static let minimumHeight: CGFloat = 28
 
@@ -612,7 +642,6 @@ private struct TitlebarClearance: View {
     }
 }
 
-/// Позволяет перетаскивать окно за верхнюю зону при hiddenTitleBar.
 private struct WindowDragHandle: NSViewRepresentable {
     func makeNSView(context: Context) -> DragRegionView {
         DragRegionView()
@@ -642,4 +671,5 @@ private final class DragRegionView: NSView {
 
 #Preview {
     ContentView()
+        .environmentObject(LocalizationManager.shared)
 }

@@ -7,6 +7,7 @@ struct DropZoneView: View {
     let onClear: () -> Void
     let onDrop: ([NSItemProvider]) -> Bool
 
+    @EnvironmentObject private var l10n: LocalizationManager
     @State private var isTargeted = false
 
     var body: some View {
@@ -23,19 +24,19 @@ struct DropZoneView: View {
                     .multilineTextAlignment(.center)
 
                 HStack(spacing: 12) {
-                    linkButton("Сменить", action: onChoose)
-                    linkButton("Сбросить", action: onClear, muted: true)
+                    linkButton(l10n.t("drop.change"), action: onChoose)
+                    linkButton(l10n.t("drop.clear"), action: onClear, muted: true)
                 }
             } else {
-                Text("Перетащите папку сюда")
+                Text(l10n.t("drop.hint"))
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(Theme.ink)
 
-                Text("или")
+                Text(l10n.t("drop.or"))
                     .font(.system(size: 12))
                     .foregroundStyle(Theme.muted)
 
-                linkButton("Выбрать папку", action: onChoose, emphasized: true)
+                linkButton(l10n.t("drop.choose"), action: onChoose, emphasized: true)
             }
         }
         .frame(maxWidth: .infinity)

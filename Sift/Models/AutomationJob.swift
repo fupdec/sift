@@ -7,11 +7,12 @@ enum ScheduleFrequency: String, Codable, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
+    @MainActor
     var title: String {
         switch self {
-        case .hourly: return "Каждый час"
-        case .daily: return "Каждый день"
-        case .weekly: return "Каждую неделю"
+        case .hourly: return L10n.t("freq.hourly")
+        case .daily: return L10n.t("freq.daily")
+        case .weekly: return L10n.t("freq.weekly")
         }
     }
 }
@@ -21,7 +22,7 @@ struct AutomationJob: Codable, Equatable {
     var frequency: ScheduleFrequency
     var hour: Int
     var minute: Int
-    /// `Calendar` weekday: 1 = воскресенье … 7 = суббота.
+    /// `Calendar` weekday: 1 = Sunday … 7 = Saturday.
     var weekday: Int
     var mode: SortMode
     var includeSubfolders: Bool
@@ -46,22 +47,26 @@ struct AutomationJob: Codable, Equatable {
         lastMessage: nil
     )
 
+    @MainActor
     var scheduleSummary: String {
         let time = String(format: "%02d:%02d", hour, minute)
         switch frequency {
         case .hourly:
-            return "Каждый час"
+            return L10n.t("freq.hourly")
         case .daily:
-            return "Каждый день в \(time)"
+            return L10n.t("freq.daily_at", time)
         case .weekly:
-            return "Каждый \(Self.weekdayName(weekday)) в \(time)"
+            return L10n.t("freq.weekly_at", Self.weekdayName(weekday), time)
         }
     }
 
+    @MainActor
     static func weekdayName(_ weekday: Int) -> String {
-        let symbols = Calendar.current.standaloneWeekdaySymbols
+        var calendar = Calendar.current
+        calendar.locale = LocalizationManager.shared.language.locale
+        let symbols = calendar.standaloneWeekdaySymbols
         let index = (weekday - 1) % max(symbols.count, 1)
-        guard symbols.indices.contains(index) else { return "день" }
+        guard symbols.indices.contains(index) else { return L10n.t("freq.day_fallback") }
         return symbols[index].lowercased()
     }
 
@@ -165,15 +170,16 @@ enum AutomationError: LocalizedError {
     case launchAgentFailed(String)
 
     var errorDescription: String? {
+        let l10n = LocalizationSnapshot(language: AppLanguage.resolveInitial())
         switch self {
         case .noBookmark:
-            return "Нет сохранённой папки для авторазбора. Добавьте расписание заново."
+            return l10n.t("auto.no_bookmark")
         case .noFolderAccess:
-            return "Нет доступа к сохранённой папке. Откройте Sift и добавьте расписание ещё раз."
+            return l10n.t("auto.no_access")
         case .notAFolder:
-            return "Сохранённый путь больше не является папкой."
+            return l10n.t("auto.not_folder")
         case .tooManyFiles(let limit):
-            return "Авторазбор пропущен: больше \(limit.formatted()) файлов."
+            return l10n.t("auto.too_many", limit)
         case .launchAgentFailed(let message):
             return message
         }

@@ -5,11 +5,12 @@ enum FileOrganizer {
         files: [ScannedFile],
         root: URL,
         mode: SortMode,
-        ageSettings: AgeSettingsSnapshot = .default
+        ageSettings: AgeSettingsSnapshot = .default,
+        l10n: LocalizationSnapshot
     ) -> [PlannedMove] {
         files.compactMap { file -> PlannedMove? in
-            guard let group = groupName(for: file, mode: mode, ageSettings: ageSettings) else {
-                return nil // остаётся на месте (свежие)
+            guard let group = groupName(for: file, mode: mode, ageSettings: ageSettings, l10n: l10n) else {
+                return nil // stay put (recent)
             }
             let destinationFolder = root.appendingPathComponent(group, isDirectory: true)
             let destination = uniqueDestination(in: destinationFolder, preferredName: file.name, avoiding: file.url)
@@ -23,15 +24,16 @@ enum FileOrganizer {
         .filter { $0.source.path != $0.destination.path }
     }
 
-    /// Сколько файлов режим «по давности» оставляет на месте.
+    /// How many files “by age” leaves in place.
     static func keptRecentCount(
         files: [ScannedFile],
         mode: SortMode,
-        ageSettings: AgeSettingsSnapshot = .default
+        ageSettings: AgeSettingsSnapshot = .default,
+        l10n: LocalizationSnapshot
     ) -> Int {
         guard mode == .byAge else { return 0 }
         return files.reduce(into: 0) { count, file in
-            if case .keep = AgeRule.rule(for: file.createdAt, settings: ageSettings) {
+            if case .keep = AgeRule.rule(for: file.createdAt, settings: ageSettings, l10n: l10n) {
                 count += 1
             }
         }
@@ -69,20 +71,21 @@ enum FileOrganizer {
     private static func groupName(
         for file: ScannedFile,
         mode: SortMode,
-        ageSettings: AgeSettingsSnapshot
+        ageSettings: AgeSettingsSnapshot,
+        l10n: LocalizationSnapshot
     ) -> String? {
         switch mode {
         case .byAge:
-            return AgeRule.rule(for: file.createdAt, settings: ageSettings).folderName
+            return AgeRule.rule(for: file.createdAt, settings: ageSettings, l10n: l10n).folderName(using: l10n)
         case .byExtension:
-            return extensionFolderName(for: file.fileExtension)
+            return extensionFolderName(for: file.fileExtension, l10n: l10n)
         }
     }
 
-    private static func extensionFolderName(for ext: String) -> String {
+    private static func extensionFolderName(for ext: String, l10n: LocalizationSnapshot) -> String {
         switch ext {
-        case "без расширения":
-            return "Без расширения"
+        case LocalizationManager.noExtensionToken:
+            return l10n.noExtensionFolderName
         case "jpg", "jpeg", "png", "gif", "heic", "webp", "tif", "tiff", "bmp":
             return "Images"
         case "mp4", "mov", "m4v", "avi", "mkv":

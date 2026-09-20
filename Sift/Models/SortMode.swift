@@ -6,24 +6,26 @@ enum SortMode: String, Codable, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
+    @MainActor
     var title: String {
         switch self {
-        case .byAge: return "По давности"
-        case .byExtension: return "По расширению"
+        case .byAge: return L10n.t("sort.by_age")
+        case .byExtension: return L10n.t("sort.by_extension")
         }
     }
 
+    @MainActor
     func subtitle(settings: AgeSettingsSnapshot) -> String {
         switch self {
         case .byAge:
             return settings.subtitle
         case .byExtension:
-            return "PDF, Images, Documents и другие"
+            return L10n.t("sort.by_extension.subtitle")
         }
     }
 }
 
-/// Пороги сортировки по давности. Хранятся в UserDefaults.
+/// Age-sort thresholds. Stored in UserDefaults.
 struct AgeSettingsSnapshot: Equatable {
     var keepUnderDays: Int
     var midSplitDays: Int
@@ -37,8 +39,9 @@ struct AgeSettingsSnapshot: Equatable {
         static let archiveAfterDays = "ageSettings.archiveAfterDays"
     }
 
+    @MainActor
     var subtitle: String {
-        "До \(keepUnderDays) дн. — на месте, до \(archiveAfterDays) — по папкам, старше — Архив"
+        L10n.t("sort.age.subtitle", keepUnderDays, archiveAfterDays)
     }
 
     static func load() -> AgeSettingsSnapshot {
@@ -68,26 +71,27 @@ struct AgeSettingsSnapshot: Equatable {
     }
 }
 
-/// Правила сортировки по давности создания.
+/// Creation-age sort rules.
 enum AgeRule {
     case keep
     case sort(folderName: String)
     case archive
 
-    var folderName: String? {
+    func folderName(using l10n: LocalizationSnapshot) -> String? {
         switch self {
         case .keep:
             return nil
         case .sort(let folderName):
             return folderName
         case .archive:
-            return "Архив"
+            return l10n.archiveFolderName
         }
     }
 
     static func rule(
         for date: Date,
         settings: AgeSettingsSnapshot,
+        l10n: LocalizationSnapshot,
         now: Date = Date(),
         calendar: Calendar = .current
     ) -> AgeRule {
@@ -104,8 +108,8 @@ enum AgeRule {
             return .archive
         }
         if days <= settings.midSplitDays {
-            return .sort(folderName: "\(settings.midSplitDays) дней")
+            return .sort(folderName: l10n.daysFolderName(settings.midSplitDays))
         }
-        return .sort(folderName: "\(settings.archiveAfterDays) дней")
+        return .sort(folderName: l10n.daysFolderName(settings.archiveAfterDays))
     }
 }

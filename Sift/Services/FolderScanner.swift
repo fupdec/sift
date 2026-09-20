@@ -134,9 +134,10 @@ enum FolderScanner {
         case cancelled
 
         var errorDescription: String? {
+            let l10n = LocalizationSnapshot(language: AppLanguage.resolveInitial())
             switch self {
-            case .notAFolder: return "Выбранный путь не является папкой."
-            case .enumerationFailed: return "Не удалось прочитать содержимое папки."
+            case .notAFolder: return l10n.t("scan.not_folder")
+            case .enumerationFailed: return l10n.t("scan.enumeration_failed")
             case .cancelled: return nil
             }
         }
